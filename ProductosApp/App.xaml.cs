@@ -1,4 +1,6 @@
-﻿namespace ProductosApp
+﻿using ProductosApp.Views;
+
+namespace ProductosApp
 {
     public partial class App : Application
     {
@@ -6,7 +8,7 @@
         {
             InitializeComponent();
 
-            MainPage = new AppShell();
+            MainPage = new ProductoView();
         }
     }
 }
