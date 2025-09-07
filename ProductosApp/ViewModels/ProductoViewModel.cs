@@ -9,7 +9,7 @@ namespace ProductosApp.ViewModels
 {
     public partial class ProductoViewModel : ObservableObject
     {
-        private readonly IDataBaseService _dbService;
+        private DataBaseService _dbService;
 
         [ObservableProperty]
         private Producto _productoSeleccionado;
@@ -17,11 +17,12 @@ namespace ProductosApp.ViewModels
         [ObservableProperty]
         private ObservableCollection<Producto> _productoCollection;
 
-        public ProductoViewModel(IDataBaseService dbService)
+        public ProductoViewModel()
         {
-            _dbService = dbService;
+            _dbService = new DataBaseService();
             ProductoCollection = new ObservableCollection<Producto>();
             LoadProductosCommand.ExecuteAsync(null);
+            ProductoSeleccionado = new Producto();
         }
 
         [RelayCommand]
@@ -38,17 +39,32 @@ namespace ProductosApp.ViewModels
         [RelayCommand]
         private async Task GuardarProducto()
         {
-            if (ProductoSeleccionado.Id == 0)
+            try
             {
-                await _dbService.CreateProducto(ProductoSeleccionado);
+                if (ProductoSeleccionado.Nombre == "")
+                {
+                    Alerta("Escriba el nombre del producto");
+                    return;
+                }
+
+                if (ProductoSeleccionado.Id == 0)
+                {
+                    await _dbService.CreateProducto(ProductoSeleccionado);
+                }
+                else
+                {
+                    await _dbService.UpdateProducto(ProductoSeleccionado);
+                }
+
+                await LoadProductos();
+                ProductoSeleccionado = new Producto();
             }
-            else
+            catch (Exception ex) 
             {
-                await _dbService.UpdateProducto(ProductoSeleccionado);
+                Alerta($"Ha ocurrido un error: {ex.Message}");
             }
 
-            await LoadProductos();
-            ProductoSeleccionado = new Producto();
+            
         }
 
         [RelayCommand]
@@ -66,6 +82,11 @@ namespace ProductosApp.ViewModels
                 await LoadProductos();
                 ProductoSeleccionado= new Producto();
             }
+        }
+
+        private void Alerta(string mensaje)
+        {
+            Application.Current!.MainPage!.DisplayAlert("", mensaje, "Aceptar");
         }
     }
 }
