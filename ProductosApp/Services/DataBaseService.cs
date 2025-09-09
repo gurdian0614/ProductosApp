@@ -10,7 +10,6 @@ namespace ProductosApp.Services
 
         public DataBaseService() 
         {
-            if (_db != null) return;
             string dbPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "Productos.db3");
             _db = new SQLiteAsyncConnection(dbPath);
             _db.CreateTableAsync<Producto>();
@@ -21,9 +20,9 @@ namespace ProductosApp.Services
             return await _db.InsertAsync(producto);
         }
 
-        public async Task<int> DeleteProducto(int id)
+        public async Task<int> DeleteProducto(Producto producto)
         {
-            return await _db.DeleteAsync(id);
+            return await _db.DeleteAsync(producto);
         }
 
         public async Task<List<Producto>> GetAllProductos()

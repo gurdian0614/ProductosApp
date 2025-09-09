@@ -30,8 +30,8 @@ namespace ProductosApp.Services
         /// <summary>
         /// Elimina un producto
         /// </summary>
-        /// <param name="id">Id del producto a eliminar</param>
+        /// <param name="producto">Objeto del producto a eliminar</param>
         /// <returns>Numero de productos eliminados</returns>
-        public Task<int> DeleteProducto(int id);
+        public Task<int> DeleteProducto(Producto producto);
     }
 }

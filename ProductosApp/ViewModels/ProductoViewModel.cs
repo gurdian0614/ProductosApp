@@ -76,11 +76,18 @@ namespace ProductosApp.ViewModels
         [RelayCommand]
         private async Task EliminarProducto()
         {
-            if (ProductoSeleccionado != null && ProductoSeleccionado.Id != 0)
+            try
             {
-                await _dbService.DeleteProducto(ProductoSeleccionado.Id);
-                await LoadProductos();
-                ProductoSeleccionado= new Producto();
+                if (ProductoSeleccionado != null && ProductoSeleccionado.Id != 0)
+                {
+                    await _dbService.DeleteProducto(ProductoSeleccionado);
+                    await LoadProductos();
+                    ProductoSeleccionado = new Producto();
+                }
+            }
+            catch (Exception ex)
+            {
+                Alerta($"Ha ocurrido un error: {ex.Message}");
             }
         }
 
