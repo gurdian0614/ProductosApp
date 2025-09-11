@@ -78,11 +78,24 @@ namespace ProductosApp.ViewModels
         {
             try
             {
-                if (ProductoSeleccionado != null && ProductoSeleccionado.Id != 0)
+                if (ProductoSeleccionado.Id == 0)
                 {
-                    await _dbService.DeleteProducto(ProductoSeleccionado);
-                    await LoadProductos();
-                    ProductoSeleccionado = new Producto();
+                    Alerta("Debe seleccionar un producto a eliminar");
+                    return;
+                }
+
+                bool respuesta = await Application.Current!.MainPage!.DisplayAlert("ELIMINAR PRODUCTO", "¿Desea eliminar este producto?", "Si", "No");
+
+                if (respuesta)
+                {
+                    
+                    if (ProductoSeleccionado != null && ProductoSeleccionado.Id != 0)
+                    {
+                        await _dbService.DeleteProducto(ProductoSeleccionado);
+                        await LoadProductos();
+                        ProductoSeleccionado = new Producto();
+                        Alerta("Producto eliminado correctamente.");
+                    }
                 }
             }
             catch (Exception ex)
